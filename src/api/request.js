@@ -1,6 +1,6 @@
-import { deleteCookie } from '@/utils/cookie'
+import { getCookie } from '@/utils/cookie'
+import { responseInterceptor } from '@/utils/response'
 import axios from 'axios'
-import { ElMessage } from 'element-plus'
 
 // 创建axios实例
 const request = axios.create({
@@ -15,6 +15,10 @@ const request = axios.create({
 // 请求拦截器
 request.interceptors.request.use(
   (config) => {
+    const token = getCookie("Authorization");
+    if (token){
+      config.headers.Authorization=`Bearer ${token}`
+    }
     // 添加时间戳防止缓存
     if (config.method === 'get') {
       config.params = {
@@ -22,7 +26,6 @@ request.interceptors.request.use(
         _t: Date.now()
       }
     }
-    
     return config
   },
   (error) => {
@@ -33,62 +36,8 @@ request.interceptors.request.use(
 
 // 响应拦截器
 request.interceptors.response.use(
-  (response) => {
-    const { data, status } = response
-    
-    // 如果响应状态码是200，直接返回数据
-    if (status === 200) {
-      return data
-    }
-    
-    // 如果后端返回了自定义的状态码
-    if (data.code !== undefined) {
-      if (data.code === 200 || data.code === 0) {
-        return data.data || data
-      } else {
-        ElMessage.error(data.message || '请求失败')
-        return Promise.reject(new Error(data.message || '请求失败'))
-      }
-    }
-    
-    return data
-  },
-  (error) => {
-    console.error('响应错误:', error)
-    
-    const { response } = error
-    
-    if (response) {
-      const { status, data } = response
-      
-      switch (status) {
-        case 401:
-          // 未授权，清除token并跳转到登录页
-          deleteCookie('token')
-          deleteCookie('user')
-          ElMessage.error('登录已过期，请重新登录')
-          window.location.href = '/login'
-          break
-        case 403:
-          ElMessage.error('没有权限访问该资源')
-          break
-        case 404:
-          ElMessage.error('请求的资源不存在')
-          break
-        case 500:
-          ElMessage.error('服务器内部错误')
-          break
-        default:
-          ElMessage.error(data?.message || `请求失败 (${status})`)
-      }
-    } else if (error.code === 'ECONNABORTED') {
-      ElMessage.error('请求超时，请检查网络连接')
-    } else {
-      ElMessage.error('网络错误，请检查网络连接')
-    }
-    
-    return Promise.reject(error)
-  }
+  responseInterceptor.onFulfilled,
+  responseInterceptor.onRejected
 )
 
 // 封装请求方法

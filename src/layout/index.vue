@@ -156,6 +156,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
 import Sidebar from './components/Sidebar.vue'
+import {getCookie} from "@/utils/cookie";
 
 const route = useRoute()
 const router = useRouter()

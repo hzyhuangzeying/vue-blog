@@ -24,7 +24,7 @@ export const getCookie = (name) => {
 export const setCookie = (name, value, days = 7, options = {}) => {
   const {
     path = '/',
-    domain = '',
+    domain = import.meta.env.VITE_COOKIE_DOMAIN,
     secure = false,
     sameSite = 'Lax'
   } = options
@@ -55,7 +55,7 @@ export const setCookie = (name, value, days = 7, options = {}) => {
  * @param {string} path - cookie路径，默认'/'
  * @param {string} domain - cookie域名
  */
-export const deleteCookie = (name, path = '/', domain = '') => {
+export const deleteCookie = (name, path = '/',  domain = import.meta.env.VITE_COOKIE_DOMAIN) => {
   let cookieString = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 UTC;path=${path}`
   
   if (domain) {

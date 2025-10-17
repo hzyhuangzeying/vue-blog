@@ -8,15 +8,16 @@ import { createApp } from 'vue'
 import App from './App.vue'
 import router from './router'
 import './styles/index.scss'
-
+import piniaPersistedstate from 'pinia-plugin-persistedstate'
 const app = createApp(App)
 
 // 注册所有图标
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
-
-app.use(createPinia())
+const pinia = createPinia()
+pinia.use(piniaPersistedstate) // 插件挂载
+app.use(pinia)
 app.use(router)
 app.use(ElementPlus, {
   locale: zhCn,
