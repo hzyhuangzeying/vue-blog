@@ -41,7 +41,8 @@
 
 <script setup>
 import { ref } from 'vue'
-import { userApi, articleApi } from '@/api'
+import { userApi } from '@/api/modules/user'
+import { articleApi } from '@/api/modules/article'
 import { ElMessage } from 'element-plus'
 
 // 响应式数据

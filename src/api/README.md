@@ -28,7 +28,7 @@ VITE_APP_VERSION=1.0.0
 ### 1. 基础请求方法
 
 ```javascript
-import { http } from '@/api'
+import { http } from '@/api/request'
 
 // GET 请求
 const data = await http.get('/users', { page: 1, size: 10 })
@@ -46,7 +46,8 @@ await http.delete('/users/1')
 ### 2. 模块化API使用
 
 ```javascript
-import { userApi, articleApi } from '@/api'
+import { userApi } from '@/api/modules/user'
+import { articleApi } from '@/api/modules/article'
 
 // 用户相关
 const userInfo = await userApi.getUserInfo()
@@ -60,7 +61,7 @@ const article = await articleApi.getArticleDetail(1)
 ### 3. 文件上传
 
 ```javascript
-import { uploadApi } from '@/api'
+import { uploadApi } from '@/api/modules/upload'
 
 // 上传文件
 const file = document.getElementById('fileInput').files[0]
@@ -81,7 +82,7 @@ const result = await uploadApi.uploadFile(file, (progress) => {
 
 <script setup>
 import { ref } from 'vue'
-import { userApi } from '@/api'
+import { userApi } from '@/api/modules/user'
 
 const users = ref([])
 
@@ -113,7 +114,7 @@ const createUser = async () => {
 ```javascript
 // stores/user.js
 import { defineStore } from 'pinia'
-import { userApi } from '@/api'
+import { userApi } from '@/api/modules/user'
 
 export const useUserStore = defineStore('user', {
   state: () => ({
